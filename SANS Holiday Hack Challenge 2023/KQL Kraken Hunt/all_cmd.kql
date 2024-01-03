@@ -1,0 +1,59 @@
+Email
+| where link == "http://madelvesnorthpole.org/published/search/MonthlyInvoiceForReindeerFood.docx"
+| where recipient in (
+    Employees
+    | where ip_addr in (
+        OutboundNetworkEvents
+        | where url has "http://madelvesnorthpole.org/published/search/MonthlyInvoiceForReindeerFood.docx"
+        | project src_ip
+        ) 
+    | project email_addr)
+| project recipient, sender, subject
+
+Employees
+| where email_addr == "alabaster_snowball@santaworkshopgeeseislands.org"
+
+OutboundNetworkEvents
+| where url has "http://madelvesnorthpole.org/published/search/MonthlyInvoiceForReindeerFood.docx"
+| project timestamp;
+
+FileCreationEvents
+| where username == "alsnowball"
+| where timestamp between(datetime(2023-12-02T10:14:00Z) .. datetime(2023-12-02T10:15:00Z))
+| project filename
+
+PassiveDns
+| where domain has "madelvesnorthpole"
+
+InboundNetworkEvents
+| where src_ip has_any (
+    "202.80.120.169",
+    "198.51.3.134",
+    "212.39.138.100",
+    "113.37.9.17",
+    "169.80.142.237",
+    "209.227.141.227",
+    "61.151.171.91",
+    "216.115.220.214",
+    "83.108.0.109",
+    "208.16.51.30"
+    );
+
+ProcessEvents
+// | where username == "alsnowball"
+// | where timestamp between(startofday(datetime(2023-12-02)) .. endofday(datetime(2023-12-03)))
+| where process_commandline has "net use"
+
+PassiveDns
+| where ip == "113.37.9.17"
+
+InboundNetworkEvents
+| where src_ip == "113.37.9.17"
+
+ProcessEvents
+// | where process_name has_any ("powershell.exe", "cmd.exe")
+| where timestamp between(startofday(datetime(2023-12-15)) .. endofday(datetime(2023-12-31)))
+| where hostname == "Y1US-DESKTOP";
+
+OutboundNetworkEvents
+| where src_ip == "10.10.0.4"
