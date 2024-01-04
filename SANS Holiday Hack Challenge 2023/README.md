@@ -22,4 +22,4 @@
 | The Captain's Comms              |       |
 | Space Island Door Access Speaker |       |
 | BONUS! Fishing Guide             | ✅    |
-| BONUS! Fishing Mastery           |       |
+| BONUS! Fishing Mastery           | ✅    |
