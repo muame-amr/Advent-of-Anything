@@ -2,6 +2,6 @@
 
 | Objective             | Solve |
 | --------------------- | ----- |
-| Elf Connection (Easy) | ✅    |
-| Elf Connection (Hard) | ✅    |
-| Elf Minder 9000       |       |
+| Elf Connection (Easy) | ✅     |
+| Elf Connection (Hard) | ✅     |
+| Elf Minder 9000       | ✅     |
