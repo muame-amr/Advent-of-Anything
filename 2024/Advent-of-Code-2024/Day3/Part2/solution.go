@@ -6,7 +6,6 @@ import (
 	"os"
 	"regexp"
 	"strconv"
-	"strings"
 )
 
 func main() {
@@ -25,15 +24,15 @@ func main() {
 		str += scanner.Text()
 	}
 
-	re := regexp.MustCompile(`mul\(\d+,\d+\)|do\(\)|don't\(\)`)
-	matches := re.FindAllString(str, -1)
+	re := regexp.MustCompile(`mul\((\d+),(\d+)\)|do\(\)|don't\(\)`)
+	matches := re.FindAllStringSubmatch(str, -1)
 
 	total := 0
 	isEnable := true
 	for _, match := range matches {
-		if match == "do()" {
+		if match[0] == "do()" {
 			isEnable = true
-		} else if match == "don't()" {
+		} else if match[0] == "don't()" {
 			isEnable = false
 		} else {
 			if isEnable {
@@ -44,11 +43,8 @@ func main() {
 	fmt.Println(total)
 }
 
-func multiply(str string) int {
-	str = strings.Replace(str, "(", " ", 1)
-	str = strings.Replace(str, ",", " ", 1)
-	str = strings.Replace(str, ")", " ", 1)
-	num1, _ := strconv.Atoi(strings.Fields(str)[1])
-	num2, _ := strconv.Atoi(strings.Fields(str)[2])
+func multiply(str []string) int {
+	num1, _ := strconv.Atoi(str[1])
+	num2, _ := strconv.Atoi(str[2])
 	return num1 * num2
 }
