@@ -34,22 +34,30 @@ func solveB(fileContent []string) {
 			total += test
 		}
 	}
-	fmt.Println(total) //7957596928935
+	fmt.Println(total) //348360680516005
 }
 
 func checkEquation(nums []int, test int) bool {
-	operators := []string{"+", "*", "|"}
-	var combinations [][]string
+	ops := []string{"+", "*", "|"}
+	combinations := make([][]string, 0)
 
-	operatorCount := len(nums) - 1
-	totalCombinations := intPow(len(operators), operatorCount)
+	// Initial combinations with first operation
+	for _, op := range ops {
+		combinations = append(combinations, []string{op})
+	}
 
-	for i := 0; i < totalCombinations; i++ {
-		current := make([]string, operatorCount)
-		for j := 0; j < operatorCount; j++ {
-			current[j] = operators[(i>>(j*2))%len(operators)]
+	// Generate all possible combinations of operations
+	for i := 1; i < len(nums)-1; i++ {
+		newCombinations := make([][]string, 0)
+		for _, combination := range combinations {
+			for _, op := range ops {
+				newCombination := make([]string, len(combination)+1)
+				copy(newCombination, combination)
+				newCombination[len(combination)] = op
+				newCombinations = append(newCombinations, newCombination)
+			}
 		}
-		combinations = append(combinations, current)
+		combinations = newCombinations
 	}
 
 	for _, combination := range combinations {
@@ -69,14 +77,6 @@ func checkEquation(nums []int, test int) bool {
 		}
 	}
 	return false
-}
-
-func intPow(base, exp int) int {
-	result := 1
-	for i := 0; i < exp; i++ {
-		result *= base
-	}
-	return result
 }
 
 func solveA(fileContent []string) {
