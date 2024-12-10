@@ -9,7 +9,7 @@ import (
 
 func main() {
 	start := time.Now()
-	content, _ := os.ReadFile("test.in")
+	content, _ := os.ReadFile("input.in")
 	fileContent := strings.TrimSpace(string(content))
 	// solveA(fileContent)
 	solveB(fileContent)

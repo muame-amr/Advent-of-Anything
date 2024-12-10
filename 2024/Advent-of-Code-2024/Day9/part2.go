@@ -40,37 +40,31 @@ func solveB(fileContent string) {
 		}
 	}
 
-	displayDiskMap(blocks, idx)
-	// fmt.Println(fileBlock)
-	// fmt.Println(freeBlock)
-
 	for curr := fileId - 1; curr >= 0; curr-- {
 		fileSize := fileBlock[curr].end - fileBlock[curr].start + 1
-		for _, dot := range freeBlock {
+		for i, dot := range freeBlock {
 			freeSize := dot.end - dot.start + 1
-			println(curr, fileSize, freeSize)
 			if freeSize > 0 && fileSize <= freeSize {
-				sdx := dot.start
-				edx := fileBlock[curr].end
 				for x := 0; x < fileSize; x++ {
-					blocks[sdx] = fmt.Sprintf("%d", curr)
-					sdx++
-					blocks[edx] = "."
-					edx--
+					blocks[dot.start+x] = fmt.Sprintf("%d", curr)
 				}
-				dot.start = sdx
+				for x := 0; x < fileSize; x++ {
+					blocks[fileBlock[curr].end-x] = "."
+				}
+				freeBlock[i] = tuple{start: dot.start + fileSize, end: dot.end}
+				break
 			}
 		}
 	}
 
-	displayDiskMap(blocks, idx)
-
-	// total := 0
-	// blockId := 0
-	// for blocks[blockId] != "." {
-	// 	val, _ := strconv.Atoi(blocks[blockId])
-	// 	total += blockId * val
-	// 	blockId++
-	// }
-	// fmt.Println(total)
+	checksum := 0
+	for k, v := range blocks {
+		if v != "." {
+			f, _ := strconv.Atoi(v)
+			checksum += k * f
+		}
+	}
+	fmt.Println(checksum)
 }
+
+// 8553289251139 : too high
