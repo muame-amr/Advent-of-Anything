@@ -12,59 +12,80 @@ type tuple struct {
 }
 
 func solveB(fileContent string) {
-	blocks := make(map[int]string)
-	fileId := 0
-	idx := 0
-	fileBlock := make(map[int]tuple)
-	freeBlock := []tuple{}
-
-	for pos, char := range strings.Split(fileContent, "") {
-		diskMap, _ := strconv.Atoi(char)
-		if pos%2 == 0 {
-			st := idx
-			for i := 0; i < diskMap; i++ {
-				blocks[idx] = fmt.Sprintf("%d", fileId)
-				idx++
-			}
-			ed := idx - 1
-			fileBlock[fileId] = tuple{start: st, end: ed}
-			fileId++
-		} else {
-			st := idx
-			for i := 0; i < diskMap; i++ {
-				blocks[idx] = "."
-				idx++
-			}
-			ed := idx - 1
-			freeBlock = append(freeBlock, tuple{start: st, end: ed})
-		}
-	}
-
-	for curr := fileId - 1; curr >= 0; curr-- {
-		fileSize := fileBlock[curr].end - fileBlock[curr].start + 1
-		for i, dot := range freeBlock {
-			freeSize := dot.end - dot.start + 1
-			if freeSize > 0 && fileSize <= freeSize {
-				for x := 0; x < fileSize; x++ {
-					blocks[dot.start+x] = fmt.Sprintf("%d", curr)
-				}
-				for x := 0; x < fileSize; x++ {
-					blocks[fileBlock[curr].end-x] = "."
-				}
-				freeBlock[i] = tuple{start: dot.start + fileSize, end: dot.end}
-				break
-			}
-		}
-	}
-
+	diskmap := []int{}
+	blocks := [][]string{}
 	checksum := 0
-	for k, v := range blocks {
-		if v != "." {
-			f, _ := strconv.Atoi(v)
-			checksum += k * f
+
+	for _, val := range strings.Split(fileContent, "") {
+		num, _ := strconv.Atoi(val)
+		diskmap = append(diskmap, num)
+	}
+
+	// fmt.Println(diskmap)
+
+	for i, inp := range diskmap {
+		file := []string{}
+		for j := inp; j > 0; j-- {
+			if i%2 == 0 {
+				file = append(file, fmt.Sprintf("%d", i/2))
+			} else {
+				file = append(file, ".")
+			}
+		}
+		if len(file) > 0 {
+			blocks = append(blocks, file)
 		}
 	}
+
+	// fmt.Println(blocks)
+
+	movedId := map[string]bool{}
+
+outer:
+	for i := len(blocks) - 1; i >= 0; i-- {
+		if blocks[i][0] != "." && movedId[blocks[i][0]] == false {
+			for j := 0; j <= i; j++ {
+				if blocks[j][0] == "." {
+					movedId[blocks[i][0]] = true
+					if len(blocks[j]) == len(blocks[i]) {
+						temp := make([]string, len(blocks[j]))
+						copy(temp, blocks[j])
+						blocks[j] = blocks[i]
+						blocks[i] = temp
+						continue outer
+					} else if len(blocks[j]) > len(blocks[i]) {
+						temp := make([]string, len(blocks[i]))
+						copy(temp, blocks[i])
+						for k := range blocks[i] {
+							blocks[i][k] = "."
+						}
+						blocks = append(blocks[:j], append([][]string{temp, blocks[j][len(blocks[i]):]}, blocks[j+1:]...)...)
+						// fmt.Println("gt", i, blocks)
+						i++
+						continue outer
+					}
+				}
+			}
+		}
+	}
+	// fmt.Println(blocks)
+
+	fragmented := []string{}
+	for _, block := range blocks {
+		fragmented = append(fragmented, block...)
+	}
+
+	// fmt.Println(fragmented)
+
+	for i, file := range fragmented {
+		if file != "." {
+			num, _ := strconv.Atoi(file)
+			checksum += i * num
+		}
+	}
+
 	fmt.Println(checksum)
 }
 
+// 6398096697992
 // 8553289251139 : too high
