@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func solveA(fileContent []string) {
+func solveB(fileContent []string) {
 	zeros := [][]int{}
 	grid := make([][]int, len(fileContent))
 	for i, line := range fileContent {
@@ -21,11 +21,11 @@ func solveA(fileContent []string) {
 		grid[i] = numarray
 	}
 
-	nines := map[string]bool{}
+	nines := 0
 	var uphill func(x int, y int)
 	uphill = func(x int, y int) {
 		if grid[y][x] == 9 {
-			nines[fmt.Sprintf("%d,%d", x, y)] = true
+			nines++
 			return
 		}
 		if y-1 >= 0 {
@@ -51,12 +51,9 @@ func solveA(fileContent []string) {
 		return
 	}
 
-	total := 0
 	for _, zero := range zeros {
-		nines = map[string]bool{}
 		uphill(zero[0], zero[1])
-		total += len(nines)
 	}
 
-	fmt.Println(total)
+	fmt.Println(nines)
 }

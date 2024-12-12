@@ -6,11 +6,6 @@ import (
 	"strings"
 )
 
-type tuple struct {
-	start int
-	end   int
-}
-
 func solveB(fileContent string) {
 	diskmap := []int{}
 	blocks := [][]string{}
